@@ -1,0 +1,179 @@
+pycharm 中多个项目并存如何设置：
+1.File下拉项中选择Settings
+2.Settings设置界面打开Project下拉列表，选择“Project Structure”详情界面
+3.点击右上角的Add Content Root，在弹出的对话框中选择需要添加的项目即可
+4.此时并可达到项目A与B共存状态
+pycharm 中删除项目的方式：
+采用PyCharm作为IDE时会发现，与其他语言的IDE相比项目删除起来比较困难，即使把源文件删除了，但是项目名称依旧保留，这里我们说明pycharm中正确的项目删除方式 
+1.选择菜单file-close project 
+2.点击项目右上角的×号，删除项目 
+3.找到项目所在位置，删除相应文件
+4.删除上述加载文件的方法还是需要到“Project Structure”中去删除
+
+
+import datetime是引入整个datetime包，如果使用datetime包中的datetime类,需要加上模块名的限定。
+
+1 import datetime
+2
+3 print datetime.datetime.now()
+    如果不加模块名限定会出现错误：TypeError: 'module' object is not callable \ AttributeError: 'module' object has no attribute 'now'
+
+ 
+
+    from datetime import datetime是只引入datetime包里的datetime类,在使用时无需添加模块名的限定。
+
+1 from datetime import datetime
+2 
+3 print datetime.now()
+ 
+
+    总结：Python导入模块的方法有两种：import module 和 from module import，区别是前者所有导入的东西使用时需加上模块名的限定，而后者不需要。
+
+
+python for 循环中range()的用法：
+>>> range(1,5) #代表从1到5(不包含5)
+[1, 2, 3, 4]
+>>> range(1,5,2) #代表从1到5，间隔2(不包含5)
+[1, 3]
+>>> range(5) #代表从0到5(不包含5)
+[0, 1, 2, 3, 4]
+如: for i in range(len(list[i]))  这种形式直接取的是列表的长度为循环的长度，应为列表的长度取值就是从0，到长度蛋不
+包含长度，所以可以直接使用range的只有一个参数的形式。
+
+类和对象
+类在内存中是占一片内存的（数据在内存中是以二进制的补码形式存在的），这个类实例的时候会形成对象，对象也会去开辟一片内存，这个对象的内存中会有一个标识来记录对应的类，这样就可以用来记录是哪个类实例化来的。
+在实例化的时候也会把初始化方法中的属性也会产生一份在对象的内存中，所以不同的对象会有自己独立的属性。
+方法也同理，在实例化的时候也会把对应的方法也产生一个自己的方法由对象来独立管理。
+
+在Python中有一个机制叫做copy 拷贝，分浅拷贝和深拷贝，如果采用浅拷贝的方式，如果被拷贝的是一个列表，并且这个列表里面还有子列表，如['str1', 'str2', 'str3', 'str4', 'str5', ['str1', 'str2', 'str3', 'str4', 'str5']]，这种形式的数据结构在被浅复制的时候其中的子列表是不会被真正复制的，所以当源内容修改了子列表中的内容后，被浅复制的列表中的子列表还是会跟着变动的，所以，源内容和被复制的内容并不是一个完全的互相独立的两个没有任何关系的独立的内容，复制出来的内容还是会被影响的。
+总之，浅复制只是复制一个应用所以如果原来的字典改了复制后的也改了，如果是深复制就不会这样，复制完成之后和原来的字段就没关系了
+import copy  
+copylist = copy.copy(sourcelist)
+深层复制是直接开辟了一片新的内存。两份是完全各自独立的互相不影响的真正的copy。
+import copy  
+copylist = copy.deepcopy(sourcelist)
+
+JOSN 的本质是字符串，JSON 只是一种数据传输格式不是一种数据类型，http使用字符串或者二进制进行传输，不可以直接传输对象，所以要想通信需要
+将对象或者其他非字符串的数据类型转成字符串，JOSN只是一种数据结构。
+发送接口请求的时候，http的content-type就是来标志请求参数的传输格式的，有表单形式，有默认形式，有JSON格式，至于是不是需要序列化和发序列化不是根据数据传输格式来确定的，而且是看请求参数的格式，如果请求参数的格式是字典型或者其他非字符串型的格式需要使用JSON的dumps()
+比如：
+import requests 
+
+url = "http://httpbin.org/post"
+data = '''{
+        "name": "hanzhichao",
+        "age": 18
+        }''' # 多行文本, 字符串格式，也可以单行（注意外层有引号，为字符串） data = '{"name": "hanzhichao", "age": 18}'
+res = requests.post(url=url, data=data) #  data支持字典或字符串
+print(res.text)
+这个请求里面的data 直接使用的就是字符串形式，所以不用序列化和反序列化了。
+
+当data 使用了字典形式，就必须要序列化和反序列化了如下
+import requests 
+import json
+url = "http://httpbin.org/post"
+data = {
+        "name": "hanzhichao",
+        "age": 18
+        }
+headers = {"Content-Type":"application/json"}
+res = requests.post(url=url, data=json.dumps(data), headers=headers)
+print(res.text)
+
+最后一种形式：或直接将字典格式的data数据赋给post方法的JSON参数（会自动将字典格式转为合法的JSON文本并添加headers）
+import requests 
+
+url = "http://openapi.tuling123.com/openapi/api/v2"
+data = {
+    "reqType":0,
+    "perception": {
+        "inputText": {
+            "text": "附近的酒店"
+        },
+        "inputImage": {
+            "url": "imageUrl"
+        },
+        "selfInfo": {
+            "location": {
+                "city": "北京",
+                "province": "北京",
+                "street": "信息路"
+            }
+        }
+    },
+    "userInfo": {
+        "apiKey": "ec961279f453459b9248f0aeb6600bbe",
+        "userId": "206379"
+    }
+} 
+res = requests.post(url=url, json=data) # JSON格式的请求，将数据赋给json参数
+print(res.text)
+
+一个python web 服务器的简单工作过程
+关于Nginx，WSGI，Flask（泛指python web框架）的各自关系和功能：
+Nginx：Hey，WSGI，我刚收到了一个请求，我需要你作些准备，然后由Flask来处理这个请求。 
+WSGI：OK，Nginx。我会设置好环境变量，然后将这个请求传递给Flask处理。 
+Flask：Thanks WSGI！给我一些时间，我将会把请求的响应返回给你。 
+WSGI：Alright，那我等你。 
+Flask：Okay，我完成了，这里是请求的响应结果，请求把结果传递给Nginx。 
+WSGI：Good job！Nginx，这里是响应结果，已经按照要求给你传递回来了。 
+Nginx：Cool，我收到了，我把响应结果返回给客户端。大家合作愉快
+
+Django+uwsgi+nginx的组合
+nginx和uwsgi的区别和作用：
+1, nginx是对外的服务器，外部浏览器通过url访问nginx, uwsgi是对内的服务器，主要用来处理动态请求。
+2, nginx接收到浏览器发送过来的http请求，将包进行解析，分析url， a.如果是静态文件请求就直接访问用户给nginx配置的静态文件目录，直接返回用户请求的静态文件， b.如果不是静态文件，而是一个动态的请求，那么nginx就将请求转发给uwsgi,uwsgi接收到请求之后将包进行处理，处理成wsgi可以接受的格式，并发给wsgi,wsgi根据请求调用应用程序的某个文件，某个文件的某个函数，最后处理完将返回值再次交给wsgi,wsgi将返回值进行打包，打包成uwsgi能够接收的格式，uwsgi接收wsgi发送的请求，并转发给nginx,nginx最终将返回值返回给浏览器。nginx还可以做一台服务器多个虚拟服务的设置，比如多个python 服务，或者python java 服务在一台主机，可以使用nginx进行转发处理。
+
+也算是一种说法：
+把Java对象转换为字节序列的过程称为对象的序列化。
+把字节序列恢复为Java对象的过程称为对象的反序列化。
+
+1、JSON没有附加的任何标记，在JS中可作为对象处理.所以这个就是说，可以方便前端操作，所以用JSON？
+普通字符串：
+Str = 'this is string’
+JSON 字符串:
+json_Str = "{StudentID:'100',Name:'tmac',Hometown:'usa'}"
+JSON对象：
+{ StudentID: "100", Name: "tmac", Hometown: "usa" }
+
+所以说，字符串是使用双引号或者单引号包围的，对象就是没有任何包围的。
+普通字符串、JSON 字符串、字典，对象
+
+json.loads(str):
+作用：将字符串转换为字典dict 类型
+
+
+{"name":"Bad Request","message":"Invalid JSON data in request body: Syntax error.","code":0,"status":400,"type":"yii\\web\\BadRequestHttpException"}
+
+
+
+
+
+
+4、data是dict形式的+headers = {'content-type': 'application/json'}的时候，不做任何转换，请求失败，需要使用data=json.dumps(data)将DICT 转换成str
+
+5、headers = {'content-type': 'application/json'}+ 字符串形式的，可以不用任何转换成功
+6、headers = {'content-type': 'application/x-www-form-urlencoded'} + 字符串 的是不可以的参数是传不进去的
+
+------------------------------------
+JSON到字典转化：
+》》》dictinfo = json.loads(json_str) 输出dict类型
+
+字典到JSON转化：
+》》》jsoninfo = json.dumps(dict)输出str类型
+
+比如：
+info = {'name' : 'jay', 'sex' : 'male', 'age': 22}
+jsoninfo = simplejson.dumps(info)
+print jsoninfo 
+
+以下两个函数用于json数据类型的转换
+json.dumps()   字典 -> json
+json.loads()   json ->  字典
+以下两个函数用于json数据类型转换的同时操作文件
+json.dump()
+json.load()
+-----------------------------------
+字符串
+字典
+json
