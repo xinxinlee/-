@@ -181,3 +181,40 @@ json
 消费者读取队列里的消息后，存入到服务器内存中，然后从内存中读取后处理。
 所以，写入内存是程序做，从内存中读取数据也是程序做，每种编程语言都有读取和写入内存的处理方式
 python读写内存是用内存中的读写-StirngIO 在内存中读取二进制字符串-BytesIO
+
+关于自动化中执行case 生成报告等的一些总结：
+全部执行CASE 
+unittest.main():case 的执行顺序是case名字的名字来排序执行顺序的
+执行部分自己选定的部分case（容器法）
+suite = unittest.TestSuite()
+suite.addTest(FirstCase01('test_first02'))
+unittest.TextTestRunner().run(suite)
+有先后顺序的CASE 或者不想执行某些case
+1、如果全部执行可以使用修改case名字来指挥执行顺序，一般情况执行顺序是case名字的名字来排序执行顺序的
+2、使用容器来执行的话，按照suite.addTest（）的加载顺序来排序
+3、在不希望执行的case 上添加@unittest.skip('不执行02这一条') 可以跳掉这一条case
+以上都是在一个py文件中的情况
+下面是分在不同的py 情况下，如何运行的问题
+case_path：是包含所有case 文件的文件夹路径
+suite = unittest.defaultTestLoader.discover(case_path,'unittest_*.py')
+        unittest.TextTestRunner().run(suite)
+if __name__ == '__main__':
+    unittest.main()
+接下来是在case 中使用assert 来简化case 文件中的判断方式，要执行的case 在case 文件夹中以不同文件和同一个文件下的一基于一个类下的多个方法，这些方法就是case，在每个case中运用assert 来判断节省代码
+所以执行case 和使用判断都是在case 文件夹下面的对应的CASE 文件中去做的，其他的一些handle 、busniss\page\base 等都是服务于case 的
+case层呈现的是最简单的将对接层的类实例化后，用对象去调用对应下层的服务中的类的方法来实现操作的。
+生成测试报告
+1、D:\Python\Python36-32\Lib 这个路径下面要放一个外部的文件HTMLTestRunner.py，这个文件有部分代码需要适配python 3
+2、添加报告代码的文件也是在case 文件中，在main()函数部分添加报告代码
+3、错误截图功能，case 失败的时候需要截图，所以一般都是在产生错误的时候才截图
+，截图也是在case 文件中加代码的
+self.driver.save_screenshot(file_path)
+一般情况下，在find_element 这种类型的文件中增加截图代码，主要是为了说查找元素失败后保存截图，所以说，想在哪里截图，就把截图代码写到哪个文件中就可以。
+一般情况下，为了截到最全的图，都是在tearDown 中增加截图代码
+
+代码运行报错后触发截图
+for method_name,error in self._outcome.errors:
+    if error:
+        file_path = '路径'
+        case_name = self._testMethodName
+        self.driver.save_screenshot(file_path)
